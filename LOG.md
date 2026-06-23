@@ -4,6 +4,19 @@ Chronological session log. Newest at top. Append-only.
 
 ---
 
+## 2026-06-23 — GitHub backup established + Phase 0 spine reconstructed
+
+**Two things happened.** (1) Discovered the local git repo from the 2026-05-22 scaffolding was **gone** — Obsidian sync (primary backup) doesn't carry `.git`, so a vault resync left only the markdown. The entire `phase0/` code tree, `.venv`, `data/`, and old `.gitignore` did **not** survive. Findings are intact (this log, EXPERIMENTS, STUDYLIST); the code that produced them was lost. (2) Re-established git and pushed to a **private GitHub remote** as the durable second backup layer — closes the open question from the scaffolding session.
+
+- **Backup:** `git init -b main` + new `.gitignore` (data/, *.nc, .venv/, graphify-out/, .cdsapirc); initial commit; `gh repo create bowg --private --source=. --push` → **github.com/nawafalrumaihi/bowg** (private). `origin/main` tracking, tree clean. See new DECISIONS entry.
+- **Spine rebuilt (E03 reproduced):** recreated `.venv` (py3.11; 3.14 still lacks wheels) with `xarray 2026.4.0 / zarr 3.1.6 / gcsfs / cdsapi / netCDF4`. Reconstructed `phase0/verify_arco_era5.py` from EXPERIMENTS.md E03 and ran it: ARCO-ERA5 opened anonymously in 5.9 s (273 vars), Bahrain cell (26.00 N, 50.50 E) peak **36.06 °C** for 15–22 Jul 2023 — matches the recorded 36.1 °C. The chosen ingestion path is verified working again.
+
+**Reality check for next session:** only `verify_arco_era5.py` has been reconstructed. The other phase0 scripts (E01–E10) are still missing and must be rebuilt from EXPERIMENTS.md before those results are reproducible. `~/.cdsapirc` is also gone — anything using `cdsapi` (E02, E05) needs the CDS token re-set + licences re-accepted; ARCO-based work (E03, E04) needs neither.
+
+**Next action (unchanged target):** Phase 1 — extend `verify_arco_era5.py` from a single-cell read into a Gulf-subset mirror → local Zarr → FastAPI `/point`. E11 (satellite LST) still queued and still pending its dependency decision.
+
+---
+
 ## 2026-05-23 — SESSION CLOSE & resume pointer (read this first)
 
 **Where we are:** Phase 0 done and richly explored. Experiments E01–E10 complete (see [[EXPERIMENTS]]); the science narrative is in [[BOWG-Phase0-Findings]], concepts in [[STUDYLIST]] (S1–S30), the why in [[BOWG-Vision]], and the data/SCE plan in [[BOWG-Data-Strategy]].

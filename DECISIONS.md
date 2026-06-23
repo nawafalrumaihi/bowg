@@ -16,6 +16,13 @@ Until Phase 0 produces real data, treat decisions marked **Proposed** as pending
 
 ---
 
+## 2026-06-23 — GitHub private remote as the second backup layer
+
+**Context:** The 2026-05-22 scaffolding `git init` did not persist — Obsidian sync (primary backup) doesn't carry `.git`, and a vault resync left only markdown, losing all `phase0/` code and the `.venv`. The "GitHub remote vs Obsidian-sync-only" question left open at scaffolding is now forced by data loss.
+**Decision:** Push BOWG to a **private** GitHub repo (`nawafalrumaihi/bowg`) as the durable second backup layer. Private for now (planning-stage); flip to public when there's a shippable artifact, matching the long-term open-source goal. Obsidian sync remains primary; git/GitHub is for version history and loss protection. Code, scripts, and `.md` are committed; data, `.venv`, caches, and secrets are gitignored.
+**Status:** Accepted.
+**Consequences:** Code now survives vault reorgs. Two backup layers can diverge — `git push` is a deliberate step, not automatic, so commit after meaningful work. `.cdsapirc` stays out of the repo (lives in `~`); CDS access must be re-established separately if lost.
+
 ## 2026-05-23 — Satellite thermal access via Microsoft Planetary Computer
 
 **Context:** E09 proved the ERA5 residual is external; spatial signal must come from new open data. Satellite LST is the un-gatekeepable spatial source (E11), but access tooling varies (Planetary Computer vs Google Earth Engine vs NASA AppEEARS).
