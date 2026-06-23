@@ -10,6 +10,10 @@ data/
 __pycache__/
 *.pyc
 
+# Local training caches + logs (regenerable from the fetch scripts)
+phase1/cache/
+*.log
+
 # Secrets (CDS API token normally lives in ~/.cdsapirc; guard against a local copy)
 .cdsapirc
 

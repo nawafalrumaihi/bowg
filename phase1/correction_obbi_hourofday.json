@@ -1,0 +1,51 @@
+{
+  "model": "hour_of_day_mean_bias",
+  "variable": "2m_temperature",
+  "units": "C",
+  "convention": "corrected = era5_raw - offset[hour_utc]  (offset = mean(era5 - obbi))",
+  "grid_cell": {
+    "lat": 26.0,
+    "lon": 50.5
+  },
+  "calibrated_against": "OBBI / Bahrain International Airport (Muharraq), Iowa Mesonet",
+  "trained_on": "JJA 2022",
+  "validated_on": "JJA 2023",
+  "n_train": 2208,
+  "n_test": 2208,
+  "flat_offset_C": -2.53,
+  "hour_offsets_C": {
+    "0": -0.023,
+    "1": -0.046,
+    "2": 0.173,
+    "3": -0.425,
+    "4": -1.848,
+    "5": -2.939,
+    "6": -4.005,
+    "7": -4.751,
+    "8": -5.31,
+    "9": -5.885,
+    "10": -6.291,
+    "11": -5.945,
+    "12": -5.437,
+    "13": -4.856,
+    "14": -4.009,
+    "15": -2.847,
+    "16": -1.695,
+    "17": -1.233,
+    "18": -0.928,
+    "19": -0.787,
+    "20": -0.701,
+    "21": -0.572,
+    "22": -0.278,
+    "23": -0.083
+  },
+  "validation": {
+    "rmse_raw_C": 3.598,
+    "rmse_flat_C": 2.521,
+    "rmse_hourofday_C": 1.437,
+    "mae_raw_C": 2.731,
+    "mae_hourofday_C": 1.072
+  },
+  "uncertainty_rmse_C": 1.437,
+  "honesty_note": "Corrects the sea-smeared ERA5 0.25 deg cell toward true Bahrain air temperature using a climatological hour-of-day offset learned at OBBI. Validated temporally AT OBBI only; the residual RMSE is the stated uncertainty. Does not transfer to the ungauged island interior (E09)."
+}
