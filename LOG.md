@@ -4,6 +4,20 @@ Chronological session log. Newest at top. Append-only.
 
 ---
 
+## 2026-06-23 — Phase 1 MVP built: reality-corrected /point API (the pitch, shipped small)
+
+**Phase 1 done.** End-to-end reality-corrected `/point` works: ARCO-ERA5 raw → hour-of-day OBBI correction → JSON with raw + corrected + honest scope. New code: `phase0/fetch_obbi_metar.py` (E06 rebuilt), `phase1/train_correction.py` (E08 rebuilt), `phase1/api.py` (FastAPI), `phase1/smoke_test.py` (passes), `requirements.txt` (pinned recovery contract). Correction model committed as `phase1/correction_obbi_hourofday.json`.
+
+- **Validation reproduced (E08):** train JJA 2022 / test JJA 2023, 2208 paired hrs each. Test RMSE **raw 3.60 → flat 2.52 → hour-of-day 1.44 °C** (60% cut, out-of-sample). Offsets +0.17 °C at night → −6.29 °C mid-afternoon — the missing diurnal cycle. Slightly higher than E08's 1.20 °C; explained by ARCO-vs-CDS source + my ob-snapping (nearest within 30 min). Structure and magnitude hold.
+- **Live demo:** OBBI cell, 2023-07-19 13:00 UTC → raw 34.0 °C, corrected 38.9 °C (±1.44). Moves toward reality; falls short of that day's 44 °C because a *climatological* offset can't capture a single extreme afternoon — stated honestly, not hidden.
+- **Honesty enforced in code:** the correction fires only inside the OBBI calibration cell; anywhere else (tested: Paris) it returns `corrected_C: null` with a scope note. No faked precision outside the validated domain.
+
+**Methodological finding (matters): Open-Meteo's archive `temperature_2m` is NOT raw ERA5 0.25°.** Tried it as a fast training shortcut; it read **42.6 °C** where ARCO read **35.0 °C** for the same cell/week — it defaults to ERA5-Land (0.1°, land-aware), an already-partly-corrected, hotter product. Training against it would have used a baseline the API doesn't serve and laundered Open-Meteo's own correction (the "proxy for the thing we replace" failure DECISIONS warns of). So the correction is trained against ARCO (the served source) only; the slow ARCO point-series pull (chunk-1 store, ~9 min/summer, E03 caveat) was cached once to `phase1/cache/`. Reaffirms "Open-Meteo = reference, not source." See DECISIONS.
+
+**Next (Phase 2):** durability + go public — cron/freshness, a second variable (dewpoint → Heat Index), cheap VPS deploy, open API docs. Also worth hardening: `/point` opens ARCO at startup (good) but a far-future `time` silently returns the nearest available step — add a freshness/staleness flag.
+
+---
+
 ## 2026-06-23 — Repositioning: open reality-corrected platform, API-first + consumer face
 
 **Strategic pivot (planning, no code).** Maintainer reframed BOWG from "open infrastructure / a diver's toolkit, *not* a weather app" toward a **public-facing, reality-corrected reanalysis data platform for Bahrainis** — "Earth Nullschool insights × Open-Meteo democratization × reality mixed in." The Phase 0 spine is kept as the backend.

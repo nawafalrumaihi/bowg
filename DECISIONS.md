@@ -16,6 +16,15 @@ Until Phase 0 produces real data, treat decisions marked **Proposed** as pending
 
 ---
 
+## 2026-06-23 — FastAPI runtime trio added; train correction against ARCO only (not Open-Meteo)
+
+**Context:** Phase 1 needs to (a) serve the API and (b) train the bias correction. Two stack questions arose. (1) The ceiling lists `fastapi` but not its server/test companions. (2) Open-Meteo's archive API returns a point ERA5 series instantly — tempting as a fast training-data source vs ARCO's slow chunk-1 point pulls.
+**Decision:**
+- **Add `uvicorn` (ASGI server) + `httpx` (TestClient) as the FastAPI runtime trio.** These are `fastapi`'s standard companions, not new architecture — counted under the existing `fastapi` ceiling entry, not a stack expansion. Pinned in `requirements.txt`.
+- **Train the correction against ARCO-ERA5 (the served source) only.** Verified Open-Meteo's archive `temperature_2m` is **ERA5-Land-based** (0.1°, land-aware): 42.6 °C vs ARCO's 35.0 °C at the OBBI cell for the same week. It is a *different, already-partly-corrected* product. Training on it would calibrate against a baseline the API doesn't serve and launder Open-Meteo's correction. The slow ARCO pull is cached once (`phase1/cache/`, gitignored) for training; the API reads ARCO live per query (cheap for single times).
+**Status:** Accepted.
+**Consequences:** Reaffirms the 2026-05-22 "Open-Meteo = validation reference, not a source" decision — now with a measured reason (the 7.6 °C product gap). Training is a one-time ~18-min cached pull. Stack ceiling unchanged in spirit; `requirements.txt` is the pinned recovery contract after the drive loss.
+
 ## 2026-06-23 — Reposition: open reality-corrected reanalysis platform, API-first, with a consumer face
 
 **Context:** Original framing was "legacy-grade open infrastructure / a diver's toolkit, *not* another weather app" (BOWG-Vision). The maintainer is repositioning toward a public-facing product for Bahrainis: the most accurate weather data they can get from global sources, scientifically sound. Framed as "Earth Nullschool insights × Open-Meteo democratization × reality mixed in." Phase 0 + spine are kept as the backend.

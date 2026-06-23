@@ -19,22 +19,27 @@ correction gets OBBI to 1.2 °C RMSE out-of-sample (E08); ERA5's own fields can'
 explain the residual (E09) → the missing signal is external. Spine reconstructed
 2026-06-23 (`phase0/verify_arco_era5.py`, ARCO-ERA5 read verified).
 
-## Phase 1 — Reality-corrected `/point` API (MVP) ← NEXT
+## Phase 1 — Reality-corrected `/point` API (MVP) — DONE ✓ 2026-06-23
 
 The smallest honest version of the entire pitch: one variable, one corrected
-number, served openly.
+number, served openly. **Built and verified:**
 
-- Read 2m temperature for the Bahrain cell from ARCO-ERA5 (spine — done).
-- **Rebuild the OBBI correction** (lost with the old code): `fetch_obbi_metar`
-  (Iowa Mesonet) + the hour-of-day bias model from E08.
-- FastAPI `/point` endpoint returning **raw + corrected** temperature, with the
-  correction method and its honest scope in the response (`corrected_at:
-  "OBBI/Muharraq, temporal"`).
-- Stack stays within the ceiling: `cdsapi`/`xarray`/`zarr`/`fastapi` + `gcsfs`.
+- `phase1/api.py` — FastAPI `/point` reads 2m temperature for the queried
+  point/time live from ARCO-ERA5 and returns **raw + corrected + honest scope**.
+- `phase0/fetch_obbi_metar.py` — OBBI ground-truth fetcher rebuilt (E06 code was
+  lost; method preserved). `phase1/train_correction.py` — hour-of-day bias model
+  rebuilt (E08), **test RMSE 3.60 → 2.52 → 1.44 °C out-of-sample** (train JJA 2022
+  / test JJA 2023); 24 offsets saved to `correction_obbi_hourofday.json`.
+- Honest scope enforced: the correction fires only inside the OBBI calibration
+  cell and **abstains** (`corrected_C: null`) elsewhere — no faked precision.
+- Stack stayed within ceiling + the FastAPI runtime trio (uvicorn/httpx) and
+  `requirements.txt` pinned for recovery. `phase1/smoke_test.py` passes.
 
-**Exit:** `GET /point?lat=..&lon=..&time=..` returns a corrected value a human can
-trust, with its uncertainty stated. This is shippable and demonstrably more
-accurate than the uncorrected global apps — the provable claim.
+**Exit met:** `GET /point?lat=..&lon=..&time=..` returns a corrected value with
+its uncertainty stated — demonstrably more accurate than the uncorrected global
+apps (the provable claim). *Known MVP limits:* one variable; calibrated/served at
+the OBBI cell only; climatological correction misses day-specific synoptic
+extremes (the ~1.4 °C residual is that miss, stated).
 
 ## Phase 2 — Durability + go public (provisional)
 
