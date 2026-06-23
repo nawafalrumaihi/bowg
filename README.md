@@ -1,6 +1,6 @@
 # BOWG — Bahrain Open Weather Gateway
 
-Open-source, legacy-grade infrastructure for Gulf climate data. Forkable by other Gulf states, citable by scientists, learnable from by students.
+An open, **reality-corrected** weather-data platform for Bahrain and the Gulf: the most accurate picture you can get from global sources, because the global numbers are corrected against local ground truth before they're served. API-first and citable underneath (forkable by other Gulf states, citable by scientists), with a public Bahraini-facing layer on top. See [`BOWG-Vision.md`](BOWG-Vision.md) for the repositioning.
 
 **Status:** Phase 0 done — gridded ERA5 pulled, opened in xarray, validated against an independent ERA5 point (+0.4°C).
 **Phase:** 1 (not started) — one source/one variable/one region → Zarr → FastAPI `/point`.

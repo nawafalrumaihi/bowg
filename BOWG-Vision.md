@@ -42,13 +42,39 @@ in the water. It just took the right diver, and the right tools, to bring it up.
 
 ## What BOWG is — and isn't
 
-**Is:** open-source, legacy-grade infrastructure that makes Bahrain (and the
-forkable Gulf) *visible* in climate data — citable by scientists, learnable by
-students, reusable by neighbours. A diver's toolkit, not another weather app.
+**Is:** an **open, reality-corrected weather-data platform for Bahrain and the
+forkable Gulf** — the most accurate picture a Bahraini can get from global
+sources, because the global numbers are corrected against local reality before
+they're served. Open-source and citable underneath (the legacy-grade DNA), with
+a friendly public face on top. Scientists can cite it, students can learn from
+it, neighbours can fork it — *and* an ordinary person in Manama can just read it.
 
 **Isn't:** a claim of magic. "Solving the cell" means *skillful, uncertainty-
 quantified* estimates grounded in real observation — not invented precision. The
-honesty is the point; it's what makes it citable.
+honesty is the point; it's what makes it both citable and trustworthy.
+
+## The product, restated (2026-06-23 repositioning)
+
+Three influences, three layers:
+
+- **Open-Meteo → the access model.** Free, open, API-first, no gatekeeping. How
+  the data reaches people. *This is the center of gravity:* BOWG is a data
+  platform first; apps and visualisations are built on top.
+- **Earth Nullschool → the experience.** The legible, beautiful Gulf weather map.
+  The aspiration for the consumer face — but a *later* phase, not the starting
+  point. The differentiator is in the data, not the pixels.
+- **"Reality mixed in" → the moat.** Open-Meteo and Earth Nullschool both serve
+  *raw global model data*. Neither corrects to local ground truth. BOWG does —
+  we measured the 8 °C hole and we close it against real Bahraini observation.
+  That correction is the only thing here nobody else is doing.
+
+A note on honesty that the framing must carry: reanalysis (ERA5) is the
+*calibration brain and historical climatology* — where the Bahrain correction is
+learned — **not** a live forecast. "Most accurate" is provable as *more accurate
+than the uncorrected global apps*, and today is firmest at the airport
+(Muharraq), where we have ground truth; the island interior remains an
+uncertainty-quantified estimate until more local observation exists. We say that
+out loud. See [[DECISIONS]] (2026-06-23 reposition entry).
 
 ## The blindspot is not just Bahrain's
 

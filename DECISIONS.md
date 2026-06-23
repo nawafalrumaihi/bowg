@@ -16,6 +16,17 @@ Until Phase 0 produces real data, treat decisions marked **Proposed** as pending
 
 ---
 
+## 2026-06-23 — Reposition: open reality-corrected reanalysis platform, API-first, with a consumer face
+
+**Context:** Original framing was "legacy-grade open infrastructure / a diver's toolkit, *not* another weather app" (BOWG-Vision). The maintainer is repositioning toward a public-facing product for Bahrainis: the most accurate weather data they can get from global sources, scientifically sound. Framed as "Earth Nullschool insights × Open-Meteo democratization × reality mixed in." Phase 0 + spine are kept as the backend.
+**Decision:** BOWG becomes an **open, reality-corrected reanalysis data platform for Bahrain/the Gulf**, with these locked choices:
+- **Center of gravity = API-first data platform** (Open-Meteo's access model): a clean open API serving reality-corrected Bahrain data; apps/viz are built on top. **Reanalysis-first is correct; no live forecast source is added yet.** The current spine (ARCO-ERA5 → correction → FastAPI `/point`) is the right MVP.
+- **Keep the open/forkable/citable DNA, add a consumer face** on top — not a pivot to closed consumer product.
+- **The three influences map to three layers:** Open-Meteo = the *access model* (open, API-first); Earth Nullschool = the *experience/viz* (later phase, not the starting point); "reality mixed in" = the *differentiator* — local ground-truth bias correction, which neither of those does for Bahrain. This is the moat.
+- **Role of reanalysis clarified:** ERA5 is the *calibration brain + historical climatology* (where the Bahrain bias-correction is learned), NOT a live-weather source. A live **forecast** layer (GFS/IFS) is a *future* phase; when it lands, the ERA5-learned correction is applied to forecast = "reality-corrected forecast." Until then the product serves corrected reanalysis/near-real-time, honestly labelled.
+**Status:** Accepted (product direction). Roadmap re-sequencing (where viz/forecast/consumer-face land as phases) is Proposed — to draft next.
+**Consequences:** Vision doc updated (below supersedes "not another weather app"). Two honesty bounds carried forward as hard constraints: (1) **"most accurate" is defensible only at OBBI/Muharraq, temporally** — the island interior remains an uncertainty-quantified estimate until spatial ground truth exists (E09/E10); claim "more accurate than uncorrected global apps," provable, never "accurate everywhere." (2) **Viz is not the starting point** — the differentiator is the data layer; the map is the later showcase. Stack ceiling unchanged for now (cdsapi/xarray/zarr/fastapi + gcsfs); a public API + consumer face will need new deps later, each via its own decision.
+
 ## 2026-06-23 — GitHub private remote as the second backup layer
 
 **Context:** The 2026-05-22 scaffolding `git init` did not persist — Obsidian sync (primary backup) doesn't carry `.git`, and a vault resync left only markdown, losing all `phase0/` code and the `.venv`. The "GitHub remote vs Obsidian-sync-only" question left open at scaffolding is now forced by data loss.

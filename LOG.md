@@ -4,6 +4,24 @@ Chronological session log. Newest at top. Append-only.
 
 ---
 
+## 2026-06-23 — Repositioning: open reality-corrected platform, API-first + consumer face
+
+**Strategic pivot (planning, no code).** Maintainer reframed BOWG from "open infrastructure / a diver's toolkit, *not* a weather app" toward a **public-facing, reality-corrected reanalysis data platform for Bahrainis** — "Earth Nullschool insights × Open-Meteo democratization × reality mixed in." The Phase 0 spine is kept as the backend.
+
+**Two forks resolved (see DECISIONS 2026-06-23 reposition entry):**
+- **Center of gravity = API-first data platform** (not consumer-app-first, not viz-first). Reanalysis-first is correct → **no forecast source added yet**; the current ARCO-ERA5 → correction → FastAPI `/point` spine is the right MVP.
+- **Keep open/forkable/citable DNA + add a consumer face** (not a pivot to closed product).
+
+**Framing locked:** Open-Meteo = access model (open, API-first); Earth Nullschool = experience/viz (later phase, *not* the start); "reality mixed in" = the moat (local ground-truth bias correction — the one thing neither competitor does). ERA5 = calibration brain + climatology, *not* live weather; a GFS/IFS forecast layer is a future phase that the ERA5-learned correction will be applied to.
+
+**Honesty bounds carried as hard constraints:** (1) "most accurate" = *more accurate than uncorrected global apps* (provable), firmest at OBBI/Muharraq temporally; the interior stays an uncertainty-quantified estimate until spatial ground truth exists (E09/E10). (2) Viz is not the starting point.
+
+**Docs updated:** BOWG-Vision.md ("What BOWG is/isn't" rewritten + new "product, restated" section), README tagline, DECISIONS.md (reposition entry, Accepted).
+
+**Next:** draft the re-sequenced roadmap (where the public API, consumer face, forecast layer, and viz land as phases) — the one piece left Proposed.
+
+---
+
 ## 2026-06-23 — GitHub backup established + Phase 0 spine reconstructed
 
 **Two things happened.** (1) Discovered the local git repo from the 2026-05-22 scaffolding was **gone** — Obsidian sync (primary backup) doesn't carry `.git`, so a vault resync left only the markdown. The entire `phase0/` code tree, `.venv`, `data/`, and old `.gitignore` did **not** survive. Findings are intact (this log, EXPERIMENTS, STUDYLIST); the code that produced them was lost. (2) Re-established git and pushed to a **private GitHub remote** as the durable second backup layer — closes the open question from the scaffolding session.
