@@ -1,0 +1,17 @@
+# Climate data — large and regenerable, never commit
+data/
+*.nc
+*.grib
+*.grib2
+*.zarr/
+
+# Python environment
+.venv/
+__pycache__/
+*.pyc
+
+# Secrets (CDS API token normally lives in ~/.cdsapirc; guard against a local copy)
+.cdsapirc
+
+# HermesBrain auto-generated caches
+graphify-out/
