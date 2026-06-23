@@ -2,8 +2,10 @@
 
 An open, **reality-corrected** weather-data platform for Bahrain and the Gulf: the most accurate picture you can get from global sources, because the global numbers are corrected against local ground truth before they're served. API-first and citable underneath (forkable by other Gulf states, citable by scientists), with a public Bahraini-facing layer on top. See [`BOWG-Vision.md`](BOWG-Vision.md) for the repositioning.
 
-**Status:** Phase 0 done — gridded ERA5 pulled, opened in xarray, validated against an independent ERA5 point (+0.4°C).
-**Phase:** 1 (not started) — one source/one variable/one region → Zarr → FastAPI `/point`.
+**Status:** Phase 1 MVP working — reality-corrected `/point` API serves raw + corrected ERA5 from ARCO, with the hour-of-day OBBI correction (test RMSE 3.60 → 1.44 °C, out-of-sample) and honest scope. ✓ 2026-06-23
+**Phase:** 2 (next) — durability + go public: cron/freshness, second variable, cheap VPS, open API docs.
+
+**Run it:** `python3.11 -m venv .venv && .venv/bin/pip install -r requirements.txt`, then `.venv/bin/uvicorn phase1.api:app` → `GET /point?lat=26.0&lon=50.5&time=2023-07-19T13:00:00Z`. (First train the model: see [`ROADMAP.md`](ROADMAP.md) Phase 1.)
 
 ## Why this exists
 
@@ -33,8 +35,8 @@ This folder is part of an Obsidian vault, so Obsidian wikilinks (e.g. `[[BOWG-Su
 Re-sequenced for the 2026-06-23 repositioning (open reality-corrected data platform, API-first). Full detail + exit criteria in [`ROADMAP.md`](ROADMAP.md).
 
 - [x] **Phase 0** — Prove the gap: ERA5 pulled, validated, +8 °C blindspot measured. ✓ 2026-05-22 (spine rebuilt 2026-06-23)
-- [ ] **Phase 1** — Reality-corrected `/point` API (MVP): ARCO-ERA5 + OBBI hour-of-day correction → FastAPI, raw + corrected + honest scope. ← next
-- [ ] **Phase 2** — Durability + go public: cron/freshness, second variable, cheap VPS, open API docs.
+- [x] **Phase 1** — Reality-corrected `/point` API (MVP): ARCO-ERA5 + OBBI hour-of-day correction → FastAPI, raw + corrected + honest scope. ✓ 2026-06-23 (RMSE 3.60→1.44 °C OOS)
+- [ ] **Phase 2** — Durability + go public: cron/freshness, second variable, cheap VPS, open API docs. ← next
 - [ ] **Phase 3** — Consumer face: minimal Bahraini-friendly read-out + Heat Index.
 - [ ] **Phase 4** — The moat: spatial ground truth (SCE / extra METAR / satellite fusion) → interior correction.
 - [ ] **Phase 5** — Forecast layer: add GFS/IFS, apply the correction → reality-corrected forecast + richer viz.
