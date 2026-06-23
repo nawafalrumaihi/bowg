@@ -16,6 +16,7 @@ The Gulf is data-poor in global climate models: GFS at 0.25° (~25km) cannot see
 - [`BOWG-Phase0-Findings.md`](BOWG-Phase0-Findings.md) — Phase 0 story: the six data layers and what they taught (start here for the ERA5 findings).
 - [`STUDYLIST.md`](STUDYLIST.md) — living curriculum: every concept we hit, with "dig deeper" pointers. The science-soak companion.
 - [`EXPERIMENTS.md`](EXPERIMENTS.md) — lab notebook: one entry per experiment (question → method → result → verdict), reproducible. The evidence trail.
+- [`ROADMAP.md`](ROADMAP.md) — re-sequenced phase plan (post-repositioning) with exit criteria.
 - [`BOWG-Summary.md`](BOWG-Summary.md) — current planning summary.
 - [`Bahrain-Open-Weather-Gateway.md`](Bahrain-Open-Weather-Gateway.md) — original blueprint (full).
 - [`BOWG.md`](BOWG.md) — earlier project doc.
@@ -29,12 +30,15 @@ This folder is part of an Obsidian vault, so Obsidian wikilinks (e.g. `[[BOWG-Su
 
 ## Phase tracker
 
-- [x] **Phase 0** — One ERA5 file on disk, opened in xarray, values sanity-checked. ✓ 2026-05-22
-- [ ] **Phase 1** — End-to-end MVP: one source, one variable, one region, Zarr → FastAPI `/point` endpoint. ← next
-- [ ] **Phase 2** — Durability: second variable, cron, freshness checks, deploy to one cheap VPS.
-- [ ] **Phase 3** — Second source (MERRA-2 aerosols) + first derived product (Heat Index) + minimal viz.
-- [ ] **Phase 4** — Bahrain-specific data sources (the actual moat).
-- [ ] **Phase 5** — One real external user.
+Re-sequenced for the 2026-06-23 repositioning (open reality-corrected data platform, API-first). Full detail + exit criteria in [`ROADMAP.md`](ROADMAP.md).
+
+- [x] **Phase 0** — Prove the gap: ERA5 pulled, validated, +8 °C blindspot measured. ✓ 2026-05-22 (spine rebuilt 2026-06-23)
+- [ ] **Phase 1** — Reality-corrected `/point` API (MVP): ARCO-ERA5 + OBBI hour-of-day correction → FastAPI, raw + corrected + honest scope. ← next
+- [ ] **Phase 2** — Durability + go public: cron/freshness, second variable, cheap VPS, open API docs.
+- [ ] **Phase 3** — Consumer face: minimal Bahraini-friendly read-out + Heat Index.
+- [ ] **Phase 4** — The moat: spatial ground truth (SCE / extra METAR / satellite fusion) → interior correction.
+- [ ] **Phase 5** — Forecast layer: add GFS/IFS, apply the correction → reality-corrected forecast + richer viz.
+- [ ] **Phase 6** — One real external user (the north star).
 
 ## How to resume with Claude
 

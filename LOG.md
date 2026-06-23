@@ -18,7 +18,7 @@ Chronological session log. Newest at top. Append-only.
 
 **Docs updated:** BOWG-Vision.md ("What BOWG is/isn't" rewritten + new "product, restated" section), README tagline, DECISIONS.md (reposition entry, Accepted).
 
-**Next:** draft the re-sequenced roadmap (where the public API, consumer face, forecast layer, and viz land as phases) — the one piece left Proposed.
+**Roadmap drafted:** re-sequenced into `ROADMAP.md` (6 phases; detail + exit criteria) and condensed into the README phase tracker. Phases beyond 1 are provisional. **Next concrete work = Phase 1:** reality-corrected `/point` API — rebuild the OBBI fetch + hour-of-day correction (lost with the old code) on top of the verified ARCO spine, served via FastAPI with raw + corrected + honest scope.
 
 ---
 
