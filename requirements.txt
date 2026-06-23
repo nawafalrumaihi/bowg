@@ -1,0 +1,21 @@
+# BOWG dependencies (py3.11). Pinned for reproducibility — the original env was
+# lost with a drive (2026-06-23); this file is the recovery contract.
+# Setup:  python3.11 -m venv .venv && .venv/bin/pip install -r requirements.txt
+# Stack ceiling is enforced in DECISIONS.md — add nothing here without an entry.
+
+# Data spine (reanalysis ingestion: ARCO-ERA5 public Zarr)
+xarray==2026.4.0
+zarr==3.1.6
+gcsfs==2026.6.0          # anonymous GCS read for ARCO-ERA5
+netCDF4==1.7.4           # local training cache (NetCDF)
+cdsapi==0.7.7            # fallback ERA5T / variables absent from ARCO
+
+# Numerics + ground-truth fetch
+numpy==2.4.6
+pandas==3.0.3
+requests==2.34.2         # OBBI METAR (Iowa Mesonet), Open-Meteo reference
+
+# API (Phase 1 /point)
+fastapi==0.138.0
+uvicorn==0.49.0          # ASGI server
+httpx==0.28.1            # TestClient (smoke_test)
