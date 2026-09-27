@@ -4,6 +4,21 @@ Chronological session log. Newest at top. Append-only.
 
 ---
 
+## 2026-09-27 — SESSION CLOSE & resume pointer (read this first)
+
+External gap review saved: [[research/2026-09-27-gap-review]] (input, not decisions).
+
+**Confirmed bug, not yet fixed:** correction was trained on cell 26.00/50.50, but OBBI itself (26.27/50.63) snaps to cell **26.25/50.75**, and Manama/Riffa to 26.25/50.50 — so `/point` at the airport, Manama or Riffa returns `corrected_C: null`, while the label says "validated at OBBI".
+
+**Decisions pending (maintainer):**
+1. Domain fix — recommended: a Bahrain domain (the 4–6 island cells), retrain on OBBI's own cell 26.25/50.75, label "calibrated at OBBI, less certain inland". Alternative: keep strictly one cell.
+2. Next work order — recommended: (a) JJA-only month guard (quick), (b) benchmark vs Open-Meteo archive at OBBI JJA 2023 (does BOWG actually beat what users already get?), (c) hour×month multi-year retrain with per-hour uncertainty (maybe quantile mapping to fix the under-corrected hot tail).
+3. Phase 2 reorder — should a DOI'd corrected-series dataset (Zenodo) come before VPS/API? Needs a DECISIONS entry if yes.
+
+**Don't forget:** no heat index until dewpoint is corrected (ERA5 Td is +2 to +7 °C too humid at the cell); an ERA5-learned correction will not transfer to GFS/IFS forecasts (Phase 5 must re-learn).
+
+---
+
 ## 2026-09-27 — Resume after 3 months; Phase 2 opened with a freshness/honesty fix
 
 **Found by reading ARCO's own metadata:** the store is refreshed daily by Google (`last_updated` 2026-09-27) and carries `valid_time_stop` = 2026-06-30 (final ERA5) and `valid_time_stop_era5t` = 2026-09-21 (preliminary, **~6-day lag**). So the Phase 2 "cron/freshness ingestion" item likely shrinks to *reading these attrs* — Google already runs the ingestion.
