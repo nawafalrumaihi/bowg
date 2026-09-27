@@ -19,6 +19,7 @@ def main() -> None:
         assert r["corrected_C"] is not None, "correction should apply at OBBI cell"
         assert r["corrected_C"] > r["raw_C"], "ERA5 is cool-biased; correction must warm it"
         assert 38 < r["corrected_C"] < 48, f"corrected {r['corrected_C']} not near reality"
+        assert r["data_tier"] == "final", "2023 is final ERA5, not preliminary"
 
         f = c.get("/point", params=FAR).json()
         print("Out of domain:", f)
@@ -27,7 +28,15 @@ def main() -> None:
         bad = c.get("/point", params={**HOT, "time": "not-a-date"})
         assert bad.status_code == 422, "bad time should 422"
 
-    print("\nOK — correction fires at OBBI, abstains elsewhere, validates input.")
+        # The ARCO time axis is pre-allocated to 2050; unwritten slots must 404,
+        # never 200-with-nulls. Same for before ERA5 begins (1940).
+        for t in ("2049-07-19T13:00:00Z", "1920-07-19T13:00:00Z"):
+            hole = c.get("/point", params={**HOT, "time": t})
+            assert hole.status_code == 404, f"{t} has no data; should 404"
+            assert "availability" in hole.json()["detail"], "404 should say what exists"
+
+    print("\nOK — correction fires at OBBI, abstains elsewhere, validates input, "
+          "refuses times with no data.")
 
 
 if __name__ == "__main__":

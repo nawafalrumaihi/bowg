@@ -4,6 +4,18 @@ Chronological session log. Newest at top. Append-only.
 
 ---
 
+## 2026-09-27 — Resume after 3 months; Phase 2 opened with a freshness/honesty fix
+
+**Found by reading ARCO's own metadata:** the store is refreshed daily by Google (`last_updated` 2026-09-27) and carries `valid_time_stop` = 2026-06-30 (final ERA5) and `valid_time_stop_era5t` = 2026-09-21 (preliminary, **~6-day lag**). So the Phase 2 "cron/freshness ingestion" item likely shrinks to *reading these attrs* — Google already runs the ingestion.
+
+**Bug (corrects the 2026-06-23 "Next" note):** a future `time` did *not* snap to the nearest available step. ARCO's time axis is **pre-allocated 1900–2050**; unwritten slots read as NaN, so `/point` returned **HTTP 200 with `raw_C: null`** while still labelling the correction "trustworthy here". Same for pre-1940. Recent ERA5T data was also served unlabelled as if final.
+
+**Fix (`phase1/api.py`):** coverage parsed from the store attrs at startup (stop dates inclusive — boundary checked: 2026-09-21T23 has data, 09-22T00 is NaN). Times outside coverage (or any stray NaN) → **404 with an `availability` block**. Every response now carries `data_tier`: `final` or `preliminary (ERA5T) — may be revised`. `/` reports availability. Smoke test extended (future + pre-1940 must 404; 2023 must be `final`) — passes. No new deps.
+
+**Open (not fixed, flagged):** the correction was trained on JJA only, but `/point` applies it in any month (e.g. a September query gets the summer offsets). Seasonal scope is the next honesty question — pending the external gap review started this session.
+
+---
+
 ## 2026-06-23 — Phase 1 MVP built: reality-corrected /point API (the pitch, shipped small)
 
 **Phase 1 done.** End-to-end reality-corrected `/point` works: ARCO-ERA5 raw → hour-of-day OBBI correction → JSON with raw + corrected + honest scope. New code: `phase0/fetch_obbi_metar.py` (E06 rebuilt), `phase1/train_correction.py` (E08 rebuilt), `phase1/api.py` (FastAPI), `phase1/smoke_test.py` (passes), `requirements.txt` (pinned recovery contract). Correction model committed as `phase1/correction_obbi_hourofday.json`.

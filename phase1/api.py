@@ -29,10 +29,40 @@ app = FastAPI(
 _state: dict = {}
 
 
+def _coverage(attrs: dict) -> dict:
+    """Data availability from the store's own metadata.
+
+    The ARCO time axis is pre-allocated (1900-2050) and unwritten slots read as
+    NaN, so the axis alone says nothing about what exists. The `valid_time_*`
+    attrs do; each stop date is inclusive (data runs through its 23:00).
+    Read once at startup, so a long-running server under-claims newer data --
+    the safe direction.
+    """
+    day = pd.Timedelta(days=1)
+    return {
+        "start": pd.Timestamp(attrs["valid_time_start"], tz="UTC"),
+        "final_end": pd.Timestamp(attrs["valid_time_stop"], tz="UTC") + day,
+        "era5t_end": pd.Timestamp(attrs["valid_time_stop_era5t"], tz="UTC") + day,
+        "store_last_updated": attrs.get("last_updated"),
+    }
+
+
 @app.on_event("startup")
 def _load() -> None:
     _state["ds"] = xr.open_zarr(ARCO_URL, storage_options={"token": "anon"}, chunks=None)
+    _state["cov"] = _coverage(_state["ds"].attrs)
     _state["model"] = json.loads(MODEL_PATH.read_text())
+
+
+def _availability() -> dict:
+    cov = _state["cov"]
+    last = pd.Timedelta(hours=1)
+    return {
+        "first_time": cov["start"].isoformat(),
+        "last_final_time": (cov["final_end"] - last).isoformat(),
+        "last_preliminary_time": (cov["era5t_end"] - last).isoformat(),
+        "store_last_updated": cov["store_last_updated"],
+    }
 
 
 @app.get("/")
@@ -43,6 +73,7 @@ def root() -> dict:
         "data_source": "ARCO-ERA5 (ECMWF reanalysis, 0.25 deg)",
         "correction": f"{m['model']} calibrated at {m['calibrated_against']}",
         "uncertainty_rmse_C": m["uncertainty_rmse_C"],
+        "availability": _availability(),
         "try": "/point?lat=26.0&lon=50.5&time=2023-07-19T13:00:00Z",
     }
 
@@ -66,6 +97,15 @@ def point(
     g_lat, g_lon = float(cell["latitude"]), float(cell["longitude"]) % 360
     used_time = pd.Timestamp(cell["time"].values, tz="UTC")
 
+    # Never serve a hole: outside the written range (or any stray NaN) is a 404
+    # that says what does exist, not a 200 with nulls.
+    cov = _state["cov"]
+    if not (cov["start"] <= used_time < cov["era5t_end"]) or np.isnan(cell.values):
+        raise HTTPException(404, {"error": f"no ERA5 data for {used_time.isoformat()}",
+                                  "availability": _availability()})
+    tier = ("final" if used_time < cov["final_end"] else
+            "preliminary (ERA5T) — may be revised when final ERA5 is released")
+
     # The correction is calibrated at the OBBI cell only; apply it solely there.
     cal = model["grid_cell"]
     in_domain = abs(g_lat - cal["lat"]) < GRID_RES / 2 and \
@@ -76,6 +116,7 @@ def point(
         "grid_cell": {"lat": round(g_lat, 2), "lon": round(g_lon, 2),
                       "time_used": used_time.isoformat()},
         "raw_C": raw_c,
+        "data_tier": tier,
         "source": "ARCO-ERA5 0.25 deg (raw reanalysis — sea-smeared over Bahrain)",
     }
     if in_domain:
